@@ -1,0 +1,527 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeafScan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            background-image: url("{% static 'l11.jpeg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            animation: changeBackground 5s infinite;
+        }
+        @keyframes changeBackground {
+            0% { background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{% static "l11.jpeg" %}'); }
+            33% { background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{% static "l22.jpeg" %}'); }
+            66% { background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{% static "l33.jpg" %}'); }
+            100% { background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{% static "l44.jpg" %}'); }
+        }
+        header {
+            background-color: transparent;
+            color: white;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: background-color 0.3s;
+        }
+        header.scrolled {
+            background-color: rgba(24, 54, 27, 0.8); /* Add a semi-transparent background */
+            color: white; /* Ensure text remains visible */
+        }
+        .container {
+            width: 90%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 30px;
+            font-weight: bold;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+            font-size: x-large;
+        }
+        nav ul li {
+            margin: 0 15px;
+            position: relative; /* For positioning the profile icon */
+        }
+        nav ul li a {
+            color: rgb(250, 253, 250);
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: rgb(249, 251, 250);
+            padding: 0 20px;
+            background-size: cover;
+            background-position: 0% 0%;
+            animation: changeHeroBackground 20s linear infinite, scrollBackground 20s linear infinite;
+            opacity: 0.8;
+        }
+        @keyframes changeHeroBackground {
+            0% { background-image: url('{% static "l11.jpeg" %}'); }
+            33% { background-image: url('{% static "l22.jpeg" %}'); }
+            66% { background-image: url('{% static "l33.jpeg" %}'); }
+            100% { background-image: url('{% static "l44.jpeg" %}'); }
+        }
+        @keyframes scrollBackground {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 0%; }
+        }
+        .hero h1 {
+            font-size: 100px;
+            margin-bottom: 20px;
+            color: rgb(247, 249, 247);
+        }
+        .hero p {
+            font-size: 70px;
+            margin-bottom: 30px;
+        }
+        .hero .btn-container {
+            display: flex;
+            gap: 10px;
+        }
+        .hero .btn {
+            padding: 15px 30px;
+            margin: 10px;
+            border: none;
+            color: white;
+            background: linear-gradient(135deg, #146936, #2bad72);
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 10px;
+            width: 200px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            transition: 0.3s ease, transform 0.3s ease;
+        }
+        .hero .btn:hover {
+            background: linear-gradient(135deg, #158b56, #095628);
+            transform: scale(1.05);
+        }
+        .hero .btn-outline {
+            background-color: transparent;
+        }
+        .testimonial, .latest-news {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .testimonial {
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            flex-direction: column;
+        }
+        .testimonial-content-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 60px;
+        }
+        .testimonial img {
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+        }
+        .testimonial-content {
+            max-width: 600px;
+            text-align: left;
+        }
+        .testimonial-content p {
+            font-size: 16px;
+            color: #666;
+            margin: 20px 0;
+        }
+        .testimonial-content h3 {
+            font-size: 18px;
+            color: #333;
+            margin: 10px 0;
+        }
+        .testimonial-content a {
+            color: linear-gradient(135deg, #095628, #158b56);
+            text-decoration: none;
+        }
+        .dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .dot {
+            width: 15px;
+            height: 15px;
+            background-color: #ddd;
+            border-radius: 50%;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .dot.active {
+            background-color: #4CAF50;
+        }
+        .latest-news {
+            background-color: #fff;
+        }
+        .latest-news h2 {
+            font-size: 24 px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .latest-news p {
+            font-size: 16px;
+            color: #fcf9f9;
+            margin-bottom: 30px;
+        }
+        .news-grid {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .news-item {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        .news-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .news-item h3 {
+            font-size: 16px;
+            color: #333;
+            margin: 10px 0;
+        }
+        .news-item p {
+            font-size: 14px;
+            color: #fcf9f9;
+        }
+        .news-item a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            nav ul li {
+                margin: 10px 0;
+            }
+            .hero .btn-container {
+                flex-direction: column;
+            }
+            .news-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+            .testimonial {
+                flex-direction: column;
+                text-align: center;
+            }
+            .testimonial-content-wrapper {
+                flex-direction: column;
+                text-align: center;
+            }
+            .testimonial-content {
+                text-align: center;
+            }
+        }
+        .footer {
+            background-image: url('bg.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 50px 0;
+            text-align: left;
+            position: relative;
+        }
+        .footer::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+        }
+        .footer .container {
+            position: relative;
+            margin-left: 1%;
+            margin-right: 10%;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .footer .container > div {
+            flex: 1;
+            margin: 10px;
+        }
+        .footer h3 {
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        .footer p {
+            color: #ccc;
+        }
+        .footer .social-icons a {
+            color: #fff;
+            margin: 0 10px;
+            font-size: 20px;
+            text-decoration: none;
+        }
+        .footer .social-icons a:hover {
+            color: #4caf50;
+        }
+        .footer .contact p {
+            margin: 5px 0;
+        }
+        .footer .bottom-bar {
+            position: relative;
+            text-align: center;
+            padding: 10px 0;
+            border-top: 1px solid #4caf50;
+            margin-top: 20px;
+            width: 80%;
+            margin: 20px auto 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer .bottom-bar p {
+            margin: 0 20px;
+        }
+        .footer .bottom-bar a {
+            color: #4caf50;
+            text-decoration: none;
+        }
+        .footer .bottom-bar a:hover {
+            text-decoration: underline;
+        }
+        .footer .bottom-bar .nav-links {
+            display: flex;
+            margin: 0 20px;
+        }
+        .footer .bottom-bar .nav-links a {
+            margin: 0 10px;
+        }
+        .footer .scroll-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px;
+            border-radius: 50%;
+            text-align: center;
+            cursor: pointer;
+        }
+        .footer .scroll-top:hover {
+            background-color: #388e3c;
+        }
+        .footer .container > div > p, .footer .container > div > .social-icons {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="{% static 'leaf.png' %}" height="120" width="150">
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about-us">About Us</a></li>
+                    <li><a href="#help-support">Help & Support</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <section class="hero">
+        <h1>WELCOME TO THE LEAF SCAN</h1>
+        <p>THE GREENER, THE BETTER</p>
+        <div class="btn-container">
+            <a class="btn" href="{% url 'dashboard' %}">Predict</a>
+            <a class="btn btn-outline" href="{%url 'chat_page'%}">Chatbot</a>
+        </div>
+    </section>
+    <section class="testimonial" id="about-us">
+        <div class="testimonial-content-wrapper">
+            <div>
+                <img src="profile2.jpg" alt="Portrait of a person giving a testimonial" id="testimonial-img" width="200" height="200">
+                <div class="dots">
+                    <span class="dot" onclick="changeTestimonial(0)"></span>
+                    <span class="dot" onclick="changeTestimonial(1)"></span>
+                    <span class="dot active" onclick="changeTestimonial(2)"></span>
+                    <span class="dot" onclick="changeTestimonial(3)"></span>
+                </div>
+            </div>
+            <div class="testimonial-content">
+                <h2>About Us</h2>
+                <p id="testimonial-text">Welcome to <strong>Leaf-Scan</strong>, a platform dedicated to helping farmers, gardeners, and agricultural enthusiasts identify and manage plant diseases effectively. Our mission is to leverage cutting-edge technology to provide accurate, fast, and accessible solutions for plant health management.</p>
+                <h3 id="testimonial-name">Dhruv Patel</h3>
+                <a href="#" id="testimonial-title">AI/ML</a>
+            </div>
+        </div>
+    </section>
+    <section class="latest-news"id="help-support">
+        <h2>LEAF SCAN PROCESS</h2>
+        <p>Follow These Steps</p>
+        <div class="news-grid">
+            <div class="news-item">
+                <img src="{% static 'click.avif' %}" alt="click the photo" width="300" height="200">
+                <h3>First, you click the photo of your plant and upload it.</h3>
+            </div>
+            <div class="news-item">
+                <img src="{% static 'detect.jpg' %}" alt="detect the diseases" width="300" height="200">
+                <h3>Once you upload the image, LeafScan detects the diseases and predicts the information.</h3>
+            </div>
+            <div class="news-item">
+                <img src="{% static 'report.png' %}" alt="report" width="300" height="200">
+                <h3>After the prediction, you get the whole report.</h3>
+            </div>
+        </div>
+    </section>
+    <div class="footer">
+        <div class="container">
+            <div>
+                <h3 >LeafScan</h3>
+                <p>Plant diseases can cause significant damage to crops and ornamental plants. It's important to identify and treat them early to prevent spread.</p>
+            </div>
+            <div>
+                <h3>CONTACT</h3>
+                <p>Address: GLS University</p>
+                <p>Phone: +1 234 122 122</p>
+                <p>Email: hackthon@gmail.com</p>
+            </div>
+        </div>
+        <div class="bottom-bar">
+            <div style="flex: 1;"></div>
+            <p>© Copyright ©2025 All rights reserved</p>
+            <div class="nav-links">
+                <a href="#">Home</a>
+                <a href="#">About Us</a>
+                <a href="#">Help & Support</a>
+            </div>
+            <div style="flex: 1;"></div>
+        </div>
+        <div class="scroll-top">
+            <i class="fa fa-chevron-up"></i>
+        </div>
+    </div>
+    <script>
+        const testimonials = [
+            {
+                img: "{% static 'neha.jpeg' %}",
+                text: "Welcome to <strong>Leaf-Scan</strong>, a platform dedicated to helping farmers, gardeners, and agricultural enthusiasts identify and manage plant diseases effectively. Our mission is to leverage cutting-edge technology to provide accurate, fast, and accessible solutions for plant health management.",
+                name: "Neha Daivat",
+                title: "UI/UX Designer"
+            },
+            {
+                img: "{% static 'sahil.jpeg' %}",
+                text: "Welcome to <strong>Leaf-Scan</strong>, a platform dedicated to helping farmers, gardeners, and agricultural enthusiasts identify and manage plant diseases effectively. Our mission is to leverage cutting-edge technology to provide accurate, fast, and accessible solutions for plant health management.",
+                name: "Sahil Koshti",
+                title: "Backend"
+            },
+            {
+                img: "{% static 'dhruv.jpeg' %}",
+                text: "Welcome to <strong>Leaf-Scan</strong>, a platform dedicated to helping farmers, gardeners, and agricultural enthusiasts identify and manage plant diseases effectively. Our mission is to leverage cutting-edge technology to provide accurate, fast, and accessible solutions for plant health management.",
+                name: "Dhruv Patel",
+                title: "AI/ML"
+            },
+            {
+                img: "{% static 'aryan.jpeg' %}",
+                text: "Welcome to <strong>Leaf-Scan</strong>, a platform dedicated to helping farmers, gardeners, and agricultural enthusiasts identify and manage plant diseases effectively. Our mission is to leverage cutting-edge technology to provide accurate, fast, and accessible solutions for plant health management.",
+                name: "Aryan Parikh",
+                title: "AI/ML"
+            }
+        ];
+
+        let currentTestimonial = 0;
+
+        function changeTestimonial(index) {
+            document.getElementById('testimonial-img').src = testimonials[index].img;
+            document.getElementById('testimonial-text').innerHTML = testimonials[index].text;
+            document.getElementById('testimonial-name').innerText = testimonials[index].name;
+            document.getElementById('testimonial-title').innerText = testimonials[index].title;
+
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach(dot => dot.classList.remove('active'));
+            dots[index].classList.add('active');
+        }
+
+        function autoChangeTestimonial() {
+            currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+            changeTestimonial(currentTestimonial);
+        }
+
+        setInterval(autoChangeTestimonial, 3000); // Change testimonial every 3 seconds
+
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+    </script>
+</body>
+</html>

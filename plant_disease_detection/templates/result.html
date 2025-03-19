@@ -1,0 +1,210 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Disease Detection Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("{% static 'p1.jpeg' %}");
+            background-size: cover;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            animation: changeBackground 15s infinite; /* Background animation */
+        }
+
+        @keyframes changeBackground {
+            0% { background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{% static "p1.jpeg" %}'); }
+            33% { background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{% static "l1.jpeg" %}'); }
+            66% { background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{% static "l3.jpeg" %}'); }
+            100% { background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('{% static "l2.jpeg" %}'); }
+        }
+
+        h1, h2, h3 {
+            font-family: 'Arial', sans-serif;
+            font-size: 28px;
+            font-weight: bold;
+            color: #0c0d0c;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-align: center;
+            color: #111111;
+        }
+
+        img {
+            display: block;
+            margin: 0 auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            opacity: 0; /* Initially hidden */
+            animation: fadeIn 1s forwards; /* Fade-in animation */
+        }
+
+        .container {
+            background: linear-gradient(135deg, #f7eeee, #f0f0f0); /* White gradient */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            margin: auto;
+            opacity: 0; /* Initially hidden */
+            animation: fadeIn 1s forwards; /* Fade-in animation */
+        }
+
+        .section {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            opacity: 0; /* Initially hidden */
+            transform: translateY(20px); /* Start slightly below */
+            animation: slideIn 0.5s forwards; /* Slide-in animation */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center horizontally */
+            justify-content: center; /* Center vertically (if needed) *//* Slide-in animation */
+        }
+
+        button {
+            background: linear-gradient(135deg, #095628, #158b56);
+            color: rgb(250, 247, 247);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+            opacity: 0; /* Initially hidden */
+            animation: fadeIn 1s forwards; /* Fade-in animation */
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .supplement-list {
+            display: none; /* Initially hide the supplement list */
+            opacity: 0; /* Initially hidden */
+            animation: fadeIn 1s forwards; /* Fade-in animation */
+        }
+
+        /* Typing animation */
+        .typing-effect {
+            overflow: hidden; /* Hide overflow */
+            border-right: 0.15em solid #4CAF50; /* Cursor effect */
+            margin: 0 auto;
+            letter-spacing: 0.15em;
+            opacity: 0; /* Initially hidden */
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite, fadeIn 1s forwards;
+            white-space: normal; /* Allow text to wrap */
+            word-wrap: break-word; /* Break long words if necessary */
+            width: 100%; /* Ensure it fits within the container */
+}
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #4CAF50; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Disease Detection Result</h1>
+
+        <!-- Show Uploaded Image -->
+        <div class="section" style="animation-delay: 0.5s;">
+            <h3>Uploaded Image:</h3>
+            <img src="{{ uploaded_image }}" alt="Uploaded Image" width="200">
+        </div>
+
+        <div class="section" style="animation-delay: 1s;">
+            <h2>Disease: {{ result }}</h2>
+        </div>
+
+        {% if disease_details %}
+            <div class="section" style="animation-delay: 1.5s;">
+                <h3>Description:</h3>
+                <p class="typing-effect">{{ disease_details.description }}</p>
+            </div>
+
+            <div class="section" style="animation-delay: 2s;">
+                <h3>Possible Steps:</h3>
+                <p class="typing-effect">{{ disease_details.steps }}</p>
+            </div>
+
+            {% if disease_details.image_url %}
+                <div class="section" style="animation-delay: 2.5s;">
+                    <h3>Disease Image:</h3>
+                    <img src="{{ disease_details.image_url }}" alt="{{ result }}" width="200">
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="section" style="animation-delay: 1.5s;">
+                <p class="typing-effect">No additional details found.</p>
+            </div>
+        {% endif %}
+
+        <div class="section" style="animation-delay: 3s;">
+            <a href="{% url 'home' %}">
+                    <button>Go To HomePage</button>
+            </a>
+            <h3>Supplements:</h3>
+            <button onclick="toggleSupplements()">Show Supplements</button>
+            <div class="supplement-list" id="supplementList">
+                {% if supplement_details %}
+                    <ul>
+                        {% for supplement in supplement_details %}
+                            <li>
+                                <strong>{{ supplement.supplement_name }}</strong><br>
+                                <img src="{{ supplement.supplement_image }}" alt="{{ supplement.supplement_name }}" width="150"><br>
+                                <a href="{{ supplement.supplement_url }}" target="_blank"><button>Buy</button></a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No supplement details available.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSupplements() {
+            var supplementList = document.getElementById('supplementList');
+            if (supplementList.style.display === 'none' || supplementList.style.display === '') {
+                supplementList.style.display = 'block';
+                supplementList.style.opacity = 1; /* Ensure it's visible */
+            } else {
+                supplementList.style.display = 'none';
+                supplementList.style.opacity = 0; /* Ensure it's hidden */
+            }
+        }
+    </script>
+</body>
+</html>
